@@ -26,7 +26,42 @@ public partial class Form1 : Form
     public Form1()
     {
         InitializeComponent();
+        ApplyAppBranding();
         InitializePresetsAndState();
+    }
+
+    private void ApplyAppBranding()
+    {
+        try
+        {
+            string baseDir = AppContext.BaseDirectory;
+            string icoPath = Path.Combine(baseDir, "Assets", "app.ico");
+            if (File.Exists(icoPath))
+            {
+                Icon = new Icon(icoPath);
+            }
+
+            string logoPath = Path.Combine(baseDir, "Assets", "logo.png");
+            if (File.Exists(logoPath))
+            {
+                using var raw = Image.FromFile(logoPath);
+                var brandLogo = new Bitmap(raw, new Size(24, 24));
+                var brandItem = new ToolStripLabel("Photo Print Studio", brandLogo)
+                {
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(20, 40, 80),
+                    Padding = new Padding(4, 0, 10, 0),
+                    ImageAlign = ContentAlignment.MiddleLeft,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                toolStripMain.Items.Insert(0, new ToolStripSeparator());
+                toolStripMain.Items.Insert(0, brandItem);
+            }
+        }
+        catch
+        {
+            // Non-fatal if branding assets are missing
+        }
     }
 
     private void InitializePresetsAndState()
